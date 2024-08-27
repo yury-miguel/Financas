@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financas Portifolio</title>
+    <link rel="stylesheet" href="{% static 'css/financeiro.css' %}">
+</head>
+<body>
+    {% include "principal/home.html" %}
+    <div class="container">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <h1>Cadastro de Portfólio</h1>
+            <div class="form-group">
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" name="titulo" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="descricao">Descrição:</label>
+                    <textarea id="descricao" name="descricao" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tipo">Tipo:</label>
+                    <select id="tipo" name="tipo" required>
+                        <option value="Projeto">Projeto</option>
+                        <option value="Ativos">Ativos</option>
+                        <option value="Cliente">Cliente</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="valor_gasto">Valor Gasto:</label>
+                    <input type="number" id="valor_gasto" name="valor_gasto" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="valor_retorno">Valor Cobrado:</label>
+                    <input type="number" id="valor_retorno" name="valor_retorno" step="0.01" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="data_inicio">Data de Início:</label>
+                    <input type="date" style="width: 480px;" id="data_inicio" name="data_inicio">
+                </div>
+                <div class="form-group">
+                    <label for="data_fim">Data de Término:</label>
+                    <input type="date" style="width: 480px;" id="data_fim" name="data_fim">
+                </div>
+            </div>
+            <button type="submit">Cadastrar</button>
+        </form>
+    </div>
+
+    <div class="container2">
+        <div class="horizontal-menu">
+            <a href="#" class="active" onclick="showPortfolios('Cliente')">Clientes</a>
+            <a href="#" onclick="showPortfolios('Projeto')">Projetos</a>
+            <a href="#" onclick="showPortfolios('Ativos')">Ativos</a>
+        </div>
+
+       <div class="portfolio-list">
+            <h2 style="color: #FFC700;">Portfólios Cadastrados</h2>
+            <div id="portfolio-content">
+                {% for portifolio in portifolios %}
+                    <div class="portifolio-item {{ portifolio.tipo }}">
+                        <h3>{{ portifolio.titulo }}</h3>
+                        <p>{{ portifolio.descricao }}</p>
+                        <p><strong>Tipo:</strong> {{ portifolio.tipo }}</p>
+                        <p><strong>Valor Gasto:</strong> R$ {{ portifolio.valor_gasto }}</p>
+                        <p><strong>Valor Retorno:</strong> R$ {{ portifolio.valor_retorno }}</p>
+                        <p><strong>Data Início:</strong> {{ portifolio.data_inicio }}</p>
+                        <p><strong>Data Fim:</strong> {{ portifolio.data_fim }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+    <script src="{% static 'js/home.js' %}"></script>
+    <script>
+        hideContainers();
+
+        function showPortfolios(tipo) {
+            let items = document.querySelectorAll('.portifolio-item');
+            items.forEach(item => {
+                if (item.classList.contains(tipo)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

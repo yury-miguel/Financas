@@ -1,0 +1,149 @@
+.conacessos
+{
+    width: 900;
+    height: 580px;
+    margin: 20px auto 0 300px;
+    background-color: #1D202A;
+    border: 1px solid rgb(149, 211, 239);
+    overflow: auto;
+    scrollbar-color: #444444 #1F222F;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    justify-content: space-between;
+}
+.header
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+}
+.header h1
+{
+    margin: 0;
+    color: #FFC700;
+}
+.access-table
+{
+    width: 100%;
+    border-collapse: collapse;
+}
+.access-table th, .access-table td
+{
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    font-weight: bold;
+}
+.access-table th
+{
+    background-color: #ccc;
+}
+.access-table tr:nth-child(even)
+{
+    background-color: #ccc;
+}
+.access-table tr:nth-child(odd)
+{
+    background-color: #384C5A;
+}
+.access-table tr:hover
+{
+    background-color: white;
+}
+.footer
+{
+    margin-top: 20px;
+    text-align: center;
+}
+.conmetas
+{
+    width: 900;
+    height: 580px;
+    margin: 20px auto 0 300px;
+    background-color: #1D202A;
+    border: 1px solid rgb(149, 211, 239);
+    overflow: auto;
+    scrollbar-color: #444444 #1F222F;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    justify-content: space-between;
+}
+.header
+ {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+}
+.form-container
+{
+    background-color: #1D202A;
+    border: 1px solid white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.form-container h2
+{
+    margin-top: 0;
+    color: #FFC700;
+}
+.form-container label
+{
+    display: block;
+    margin-bottom: 8px;
+    color: #bbbbbb;
+}
+.form-container input, .form-container textarea, .form-container button
+ {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #ccc;
+    color: black;
+}
+.form-container button
+{
+    background-color: #334756;
+    cursor: pointer;
+}
+.form-container button:hover
+{
+    background-color: #45a049;
+}
+.metas-container
+ {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.meta-card
+{
+    background-color: #1f1f1f;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+.meta-card h3
+{
+    margin-top: 0;
+    color: #4CAF50;
+}
+.meta-card p
+{
+    margin: 10px 0;
+}
+.meta-card .meta-date
+{
+    font-size: 0.9em;
+    color: #bbbbbb;
+}

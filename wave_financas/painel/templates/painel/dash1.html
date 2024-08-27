@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financas Painel</title>
+    <link rel="stylesheet" href="{% static 'css/dash.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    {% include "principal/home.html" %}
+    <div class="dashboard-container10">
+        <h2 class="section-title2">Performance Financeira</h2>
+        <div class="kpi-container">
+            <canvas id="kpiChart"></canvas>
+        </div>
+
+        <h2 class="section-title">Portfólio</h2>
+        <div class="portfolio-container">
+            <div class="portfolio">
+                <h3>Projetos</h3>
+                <p>Quantidade: {{ qtd_projetos }}</p>
+                <div class="ganho-gasto">
+                    <p>Ganho: ${{ ganho_projetos }}</p>
+                    <p>Gasto: ${{ gasto_projetos }}</p>
+                </div>
+            </div>
+            <div class="portfolio">
+                <h3>Clientes</h3>
+                <p>Quantidade: {{ qtd_clientes }}</p>
+                <div class="ganho-gasto">
+                    <p>Ganho: ${{ ganho_clientes }}</p>
+                    <p>Gasto: ${{ gasto_clientes }}</p>
+                </div>
+            </div>
+            <div class="portfolio">
+                <h3>Ativos</h3>
+                <p>Quantidade: {{ qtd_ativos }}</p>
+                <div class="ganho-gasto">
+                    <p>Ganho: ${{ ganho_ativos }}</p>
+                    <p>Gasto: ${{ gasto_ativos }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-container">
+            <canvas id="barChart"></canvas>
+            <canvas id="lineChart" style="margin-left: 20px;"></canvas>
+        </div>
+    </div>
+
+
+     <script src="{% static 'js/home.js' %}"></script>
+    <script>
+        const kpiCtx = document.getElementById('kpiChart').getContext('2d');
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        const lineCtx = document.getElementById('lineChart').getContext('2d');
+
+        const kpiData = {
+            labels: ['Mensal', 'Trimestral', 'Semestral', 'Anual'],
+            datasets: [
+                {
+                    label: 'Receitas',
+                    data: [{{ receitas_mensal }}, {{ receitas_trimestral }}, {{ receitas_semestral }}, {{ receitas_anual }}],
+                    backgroundColor: '#4BC0C0'
+                },
+                {
+                    label: 'Despesas',
+                    data: [{{ despesas_mensal }}, {{ despesas_trimestral }}, {{ despesas_semestral }}, {{ despesas_anual }}],
+                    backgroundColor: '#DE9E55'
+                },
+                {
+                    label: 'Saldo',
+                    data: [{{ saldo_mensal }}, {{ saldo_trimestral }}, {{ saldo_semestral }}, {{ saldo_anual }}],
+                    backgroundColor: '#68A160'
+                }
+            ]
+        };
+
+        const kpiChart = new Chart(kpiCtx, {
+            type: 'bar',
+            data: kpiData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+            }
+        });
+
+        const barChart = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Receitas', 'Despesas', 'Saldo'],
+                datasets: [{
+                    label: 'Financeiro',
+                    data: [{{ total_receitas }}, {{ total_despesas }}, {{ saldo }}],
+                    backgroundColor: ['#4BC0C0', '#DE9E55', '#68A160'],
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const lineChart = new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: ['Ganho com Projetos', 'Gasto com Projetos', 'Ganho com Clientes', 'Gasto com Clientes', 'Ganho com Ativos', 'Gasto com Ativos'],
+                datasets: [{
+                    label: 'Portfólio',
+                    data: [{{ ganho_projetos }}, {{ gasto_projetos }}, {{ ganho_clientes }}, {{ gasto_clientes }}, {{ ganho_ativos }}, {{ gasto_ativos }}],
+                    borderColor: '#4CAEB0',
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        function resizeChart() {
+            kpiChart.resize();
+        }
+
+        window.addEventListener('resize', resizeChart);
+        hideContainers();
+    </script>
+</body>
+</html>

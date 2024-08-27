@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financas Despesa</title>
+    <link rel="stylesheet" href="{% static 'css/despesas.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    {% include "principal/home.html" %}
+    <div class="container">
+        <h1>Análise de despesas</h1>
+
+        <div class="total-despesas">
+            <h2 style="color: white;">Valor Total das despesas: R$ {{ total_despesas }}</h2>
+        </div>
+
+        <div class="grafico-pareto">
+            <canvas id="paretoChart"></canvas>
+        </div>
+    </div>
+    <script src="{% static 'js/home.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('paretoChart').getContext('2d');
+
+            var despesasPorCategoria = {{ despesas_por_categoria|safe }};
+
+            var labels = despesasPorCategoria.map(function (item) {
+                return item.categoria;
+            });
+
+            var data = despesasPorCategoria.map(function (item) {
+                return item.valor__sum;
+            });
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'despesas por Categoria',
+                        data: data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return 'R$ ' + value;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return 'R$ ' + context.raw;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+        hideContainers();
+    </script>
+</body>
+</html>

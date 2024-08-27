@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financas Login</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<div id="loginform">
+    <img src="{% static 'img/brasil.png' %}" class="flag">
+    <div class="left-side">
+        <div class="chart-container">
+            <canvas id="myChart" style="width: 70%; height: 300px;"></canvas>
+        </div>
+    </div>
+    <div class="divider"></div>
+    <div class="right-side">
+        <h2>Bem Vindo (a)!</h2>
+        <div class="divider2"></div>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Login">
+        </form>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'js/login.js' %}"></script>
+</div>
+</html>

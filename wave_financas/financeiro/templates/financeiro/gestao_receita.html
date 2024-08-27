@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financas Receitas</title>
+    <link rel="stylesheet" href="{% static 'css/receitas.css' %}">
+</head>
+<body>
+    {% include "principal/home.html" %}
+    <div class="container20">
+        <h1>Gestão de Receitas</h1>
+        <div class="table-container">
+            <table class="gestao-table">
+                <thead>
+                    <tr>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Efetuada</th>
+                        <th>Data</th>
+                        <th>Categoria</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for receita in receitas %}
+                    <tr data-id="{{ receita.receita_id }}">
+                        <td>{{ receita.descricao }}</td>
+                        <td>{{ receita.valor }}</td>
+                        <td>{{ receita.efetuada|yesno:"Sim,Não" }}</td>
+                        <td>{{ receita.data_receita }}</td>
+                        <td>{{ receita.categoria }}</td>
+                        <td>
+                            <button onclick="editReceita({{ receita.receita_id }})" style="border: none; background-color: #EED548">Editar</button>
+                            <button onclick="deleteReceita({{ receita.receita_id }})" style="border: none; background-color: #FF4141">Excluir</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="edit-form-container">
+            <h2 style="color: #FFC700;">Editar Receita</h2>
+            <form id="edit-form" method="post">
+                {% csrf_token %}
+                <input type="hidden" id="acao" name="acao" value="editar">
+                <input type="hidden" id="receita_id" name="receita_id">
+                <div class="form-group">
+                    <label for="descricao">Descrição</label>
+                    <input type="text" id="descricao" name="descricao" required>
+                </div>
+                <div class="form-group-inline">
+                    <div class="form-group">
+                        <label for="valor">Valor</label>
+                        <input type="text" id="valor" name="valor" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="data_receita">Data</label>
+                        <input type="date" id="data_receita" name="data_receita" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="efetuada-checkbox">Efetuada</label>
+                    <label class="switch">
+                        <input type="checkbox" id="efetuada-checkbox" name="efetuada" value="False">
+                        <span class="slider round"></span>
+                    </label>
+                    <span id="toggle-text">Receita Recorrente</span>
+                </div>
+                <div class="form-group2">
+                    <label style="color: gray; font-weight: bold; margin-bottom: 5px;" for="categoria">Categoria</label>
+                    <select id="categoria" name="categoria" required></select>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="{% static 'js/home.js' %}"></script>
+    <script>
+        document.getElementById('efetuada-checkbox').addEventListener('change', function() {
+            var toggleText = document.getElementById('toggle-text');
+            if (this.checked) {
+                this.value = 'True';
+                toggleText.textContent = 'Receita Recebida';
+            } else {
+                this.value = 'False';
+                toggleText.textContent = 'Receita Recorrente';
+            }
+        });
+
+        function editReceita(id) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/movimentacao/detalhes_receita/' + id, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var receita = JSON.parse(xhr.responseText);
+                        preencherFormulario(receita);
+                    } else {
+                        console.error('Ocorreu um erro ao recuperar os detalhes da receita.');
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        function preencherFormulario(receita) {
+            document.getElementById('receita_id').value = receita.id;
+            document.getElementById('descricao').value = receita.descricao;
+            document.getElementById('valor').value = receita.valor;
+            document.getElementById('efetuada-checkbox').checked = receita.efetuada;
+            document.getElementById('efetuada-checkbox').dispatchEvent(new Event('change'));
+            document.getElementById('data_receita').value = receita.data_receita;
+            var selectCategoria = document.getElementById('categoria');
+            selectCategoria.innerHTML = '';
+
+            var optionCategoria = document.createElement('option');
+            optionCategoria.value = receita.categoria;
+            optionCategoria.text = receita.categoria;
+            selectCategoria.add(optionCategoria);
+        }
+
+        function deleteReceita(id) {
+            if (confirm('Tem certeza que deseja excluir esta receita?')) {
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '';
+                form.innerHTML = `
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="deletar">
+                    <input type="hidden" name="receita_id" value="${id}">
+                `;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+        hideContainers();
+    </script>
+</body>
+</html>

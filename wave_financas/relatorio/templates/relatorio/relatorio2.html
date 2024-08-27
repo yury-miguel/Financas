@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financas Relatorio</title>
+    <link rel="stylesheet" href="{% static 'css/relatorio.css' %}">
+</head>
+<body>
+    {% include "principal/home.html" %}
+    <div class="relatorio-container2">
+        <h2>Relatório de Contas</h2>
+
+        <div class="section">
+            <h2>Despesas Atrasadas</h2>
+            <ul>
+                {% for despesa in despesas_a_pagar %}
+                    <li>{{ despesa.descricao }} - ${{ despesa.valor }} data da despesa {{ despesa.data_despesa }}</li>
+                {% endfor %}
+            </ul>
+            <p style="font-weight: bold; color: white; font-size: 14px;">Total de Despesas Atrasadas: ${{ total_despesas_atrasadas }}</p>
+        </div>
+
+        <div class="section">
+            <h2>Receitas a Receber</h2>
+            <ul>
+                {% for receita in receitas_a_receber %}
+                    <li>{{ receita.descricao }} - ${{ receita.valor }} data esperada {{ receita.data_receita }}</li>
+                {% endfor %}
+            </ul>
+            <p style="font-weight: bold; color: white; font-size: 14px;">Total de Receitas a Receber: ${{ total_receitas_a_receber }}</p>
+        </div>
+
+        <div class="section">
+            <h3>Resumo</h3>
+            <div class="resumo">
+                <p><i class="fa fa-coins"></i> Total de Contas a Pagar (Despesas): ${{ total_contas_a_pagar }}</p>
+            </div>
+        </div>
+
+        <div class="download-section">
+            <a href="?download=1" class="download-button">Baixar Relatório</a>
+        </div>
+    </div>
+
+    <script src="{% static 'js/home.js' %}"></script>
+    <script>
+        hideContainers();
+    </script>
+</body>
+</html>

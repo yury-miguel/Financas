@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financas Sistema</title>
+    <link rel="stylesheet" href="{% static 'css/sistema.css' %}">
+</head>
+<body>
+    {% include "principal/home.html" %}
+    <div class="conmetas">
+        <div class="header">
+            <h1>Metas</h1>
+        </div>
+
+        <div class="form-container">
+            <h2>Cadastrar Nova Meta</h2>
+            <form method="POST" action="{% url 'metas' %}">
+                {% csrf_token %}
+                <label for="descricao">Descrição</label>
+                <textarea id="descricao" name="descricao" required></textarea>
+
+                <label for="data_meta">Data da Meta</label>
+                <input type="date" id="data_meta" name="data_meta" required>
+
+                <button type="submit">Cadastrar Meta</button>
+            </form>
+        </div>
+
+        <div class="metas-container">
+            {% for meta in metas %}
+            <div class="meta-card">
+                <h3>Meta #{{ meta.meta_id }}</h3>
+                <p>{{ meta.descricao }}</p>
+                <p class="meta-date">Data: {{ meta.data_meta }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="{% static 'js/home.js' %}"></script>
+    <script>
+        hideContainers();
+    </script>
+</body>
+</html>

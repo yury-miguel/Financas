@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financas Painel</title>
+    <link rel="stylesheet" href="{% static 'css/dash.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    {% include "principal/home.html" %}
+    <div class="dashboard-container3">
+        <h2 class="section-title">Giro Financeiro</h2>
+
+        <div class="charts3-container">
+            <div class="chart3">
+                <canvas id="receitasDespesasChart"></canvas>
+            </div>
+        </div>
+
+        <div class="charts3-container">
+            <div class="chart3">
+                <canvas id="receitasSetorChart"></canvas>
+            </div>
+            <div class="chart3">
+                <canvas id="despesasSetorChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/home.js' %}"></script>
+    <script>
+        const receitasDespesasCtx = document.getElementById('receitasDespesasChart').getContext('2d');
+        const receitasSetorCtx = document.getElementById('receitasSetorChart').getContext('2d');
+        const despesasSetorCtx = document.getElementById('despesasSetorChart').getContext('2d');
+
+        const meses = {{ meses|safe }};
+        const receitasData = {{ receitas_chart_data|safe }};
+        const despesasData = {{ despesas_chart_data|safe }};
+        const receitasRecebidas = {{ receitas_recebidas|safe }};
+        const receitasNaoRecebidas = {{ receitas_nao_recebidas|safe }};
+        const despesasPagas = {{ despesas_pagas|safe }};
+        const despesasNaoPagas = {{ despesas_nao_pagas|safe }};
+
+
+        const receitasDespesasChart = new Chart(receitasDespesasCtx, {
+            type: 'bar',
+            data: {
+                labels: meses,
+                datasets: [
+                    {
+                        label: 'Receitas',
+                        data: receitasData,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Despesas',
+                        data: despesasData,
+                        backgroundColor: '#FFB163',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: {
+                            color: '#333333'
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        grid: {
+                            color: '#333333'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#FFFFFF'
+                        }
+                    }
+                }
+            }
+        });
+
+
+        const receitasSetorChart = new Chart(receitasSetorCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Recebidas', 'Não Recebidas'],
+                datasets: [{
+                    data: [receitasRecebidas, receitasNaoRecebidas],
+                    backgroundColor: ['#61A1A1', '#DE9E55']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#FFFFFF'
+                        }
+                    }
+                }
+            }
+        });
+
+
+        const despesasSetorChart = new Chart(despesasSetorCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pagas', 'Não Pagas'],
+                datasets: [{
+                    data: [despesasPagas, despesasNaoPagas],
+                    backgroundColor: ['#61A1A1', '#DE9E55']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#FFFFFF'
+                        }
+                    }
+                }
+            }
+        });
+
+        hideContainers();
+    </script>
+</body>
+</html>

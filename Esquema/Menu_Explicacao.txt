@@ -1,0 +1,49 @@
+* Financeiro
+    -- Fluxo -> Visão detalhada do capital, filtros de lançamentos
+
+    -- Portifólio -> Cadastro de projetos, ativos financeiros
+
+    -- Extratos -> Visualização das receitas, despesas, situações inadimplentes e atrasos
+
+
+
+* Receita
+    -- Cadastro ->  Cadastro de novas receitas
+
+    -- Gestão -> CRUD e visualização de receitas cadastradas
+
+    -- Análises -> Gráfico de volume
+
+
+
+* Despesa
+    -- Cadastro ->  Cadastro de novas despesas
+
+    -- Gestão -> CRUD e visualização de despesas cadastradas
+
+    -- Análises -> Gráfico de volume
+
+
+
+* Painel (Dashboard)
+    -- Performance -> Gráfico indicadores, desempenho
+
+    -- Operações -> Gráfico de processos de entrada e saidas, eficiência
+
+    -- Giro -> Gráfico de pareto, capital, lucros
+
+
+
+* Relatórios
+    -- Gastos -> Download e visualização de dados de gastos em word
+
+    -- Balanço -> Download e visualização de dados de balanço em word
+
+    -- Contas -> Download e visualização de dados de contas e receitas à pagar ou à receber em word
+
+
+
+* Sistema
+    -- Metas -> Criação, acompanhamento, definição de objetivos à prazo
+
+    -- Noticias -> Api noticias de politica e financas do Brasil

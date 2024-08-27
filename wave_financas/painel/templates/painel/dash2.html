@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financas Painel</title>
+    <link rel="stylesheet" href="{% static 'css/dash.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    {% include "principal/home.html" %}
+    <div class="dashboard-container2">
+        <div class="main-content">
+            <div class="table-container">
+                <h2 class="section-title">Detalhes de Receitas e Despesas</h2>
+                <table id="detailsTable">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>ID</th>
+                            <th>Descrição</th>
+                            <th>Categoria</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <th><input type="text" id="typeFilter" placeholder="Filtrar"></th>
+                            <th><input type="text" id="idFilter" placeholder="Filtrar"></th>
+                            <th><input type="text" id="descFilter" placeholder="Filtrar"></th>
+                            <th><input type="text" id="catFilter" placeholder="Filtrar"></th>
+                            <th><input type="text" id="valFilter" placeholder="Filtrar"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in receitas %}
+                            <tr>
+                                <td>Receita</td>
+                                <td>{{ item.id_receita }}</td>
+                                <td>{{ item.descricao }}</td>
+                                <td>{{ item.categoria }}</td>
+                                <td>{{ item.valor }}</td>
+                            </tr>
+                        {% endfor %}
+                        {% for item in despesas %}
+                            <tr>
+                                <td>Despesa</td>
+                                <td>{{ item.id_despesa }}</td>
+                                <td>{{ item.descricao }}</td>
+                                <td>{{ item.categoria }}</td>
+                                <td>{{ item.valor }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="charts2-container">
+                <div class="chart2">
+                    <h2 class="section-title">Comparativo de Entradas e Saídas</h2>
+                    <canvas id="comparativoChart"></canvas>
+                </div>
+                <div class="chart2">
+                    <h2 class="section-title3">Eficiência</h2>
+                    <canvas id="eficienciaChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/home.js' %}"></script>
+    <script>
+        const comparativoCtx = document.getElementById('comparativoChart').getContext('2d');
+        const eficienciaCtx = document.getElementById('eficienciaChart').getContext('2d');
+
+        const meses = {{ meses|safe }};
+        const receitasData = {{ receitas_chart_data|safe }};
+        const despesasData = {{ despesas_chart_data|safe }};
+        const eficienciaData = {{ eficiencia_data|safe }};
+
+        const comparativoChart = new Chart(comparativoCtx, {
+            type: 'line',
+            data: {
+                labels: meses,
+                datasets: [
+                    {
+                        label: 'Receitas',
+                        data: receitasData,
+                        borderColor: '#4BC0C0',
+                        fill: false
+                    },
+                    {
+                        label: 'Despesas',
+                        data: despesasData,
+                        borderColor: '#DE9E55',
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#333333'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: '#333333'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#FFFFFF'
+                        }
+                    }
+                }
+            }
+        });
+
+        const eficienciaChart = new Chart(eficienciaCtx, {
+            type: 'line',
+            data: {
+                labels: meses,
+                datasets: [{
+                    label: 'Eficiência',
+                    data: eficienciaData,
+                    borderColor: '#4BC0C0',
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#333333'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: '#333333'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#FFFFFF'
+                        }
+                    }
+                }
+            }
+        });
+
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            input.addEventListener('input', filterTable);
+            input.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    filterTable();
+                }
+            });
+        });
+
+        function filterTable() {
+            const typeFilter = document.getElementById('typeFilter').value.toUpperCase();
+            const idFilter = document.getElementById('idFilter').value.toUpperCase();
+            const descFilter = document.getElementById('descFilter').value.toUpperCase();
+            const catFilter = document.getElementById('catFilter').value.toUpperCase();
+            const valFilter = document.getElementById('valFilter').value.toUpperCase();
+
+            const table = document.getElementById('detailsTable');
+            const tr = table.getElementsByTagName('tr');
+
+            for (let i = 2; i < tr.length; i++) {
+                let tdType = tr[i].getElementsByTagName('td')[0];
+                let tdId = tr[i].getElementsByTagName('td')[1];
+                let tdDesc = tr[i].getElementsByTagName('td')[2];
+                let tdCat = tr[i].getElementsByTagName('td')[3];
+                let tdVal = tr[i].getElementsByTagName('td')[4];
+
+                if (tdType && tdId && tdDesc && tdCat && tdVal) {
+                    const txtValueType = tdType.textContent || tdType.innerText;
+                    const txtValueId = tdId.textContent || tdId.innerText;
+                    const txtValueDesc = tdDesc.textContent || tdDesc.innerText;
+                    const txtValueCat = tdCat.textContent || tdCat.innerText;
+                    const txtValueVal = tdVal.textContent || tdVal.innerText;
+
+                    if (txtValueType.toUpperCase().indexOf(typeFilter) > -1 &&
+                        txtValueId.toUpperCase().indexOf(idFilter) > -1 &&
+                        txtValueDesc.toUpperCase().indexOf(descFilter) > -1 &&
+                        txtValueCat.toUpperCase().indexOf(catFilter) > -1 &&
+                        txtValueVal.toUpperCase().indexOf(valFilter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        hideContainers();
+    </script>
+</body>
+</html>

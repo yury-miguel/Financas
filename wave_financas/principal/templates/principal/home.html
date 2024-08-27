@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financas Home</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2 style="color: #124458; font-weight: bold;">Wave Financas</h2>
+        <div class="user-profile">
+            <div class="user-avatar">
+                <img src="data:image/png;base64,{{ foto_base64 }}" alt="User Avatar">
+            </div>
+            <div class="user-info">
+                <h2>Informações do Perfil</h2>
+                <div class="user-detail">
+                    <p><strong>Nome:</strong> {{ nome }}</p>
+                    <hr class="info-separator">
+                    <p><strong>Email:</strong> {{ email }}</p>
+                    <hr class="info-separator">
+                    <p><strong>Telefone:</strong> {{ telefone }}</p>
+                    <hr class="info-separator">
+                </div>
+            </div>
+            <div class="clock">
+                <p id="clock"></p>
+            </div>
+        </div>
+    </div>
+    <div class="menu">
+        <ul>
+            <li><a onclick="showSubMenu('financeiro')" class="menu-item">
+                    <img src="{% static 'img/financa.png' %}" class="menu-icon">
+                    Financeiro
+                </a>
+                <ul class="submenu" id="financeiro">
+                    <li><a href="{% url 'home' %}">Fluxo</a></li>
+                    <li><a href="{% url 'portifolio' %}">Portifolio</a></li>
+                    <li><a href="{% url 'extratos' %}">Extrato</a></li>
+                </ul>
+            </li>
+            <li>
+                <a onclick="showSubMenu('receitas')" class="menu-item">
+                    <img src="{% static 'img/a-receber.png' %}" class="menu-icon">
+                    Receitas
+                </a>
+                <ul class="submenu" id="receitas">
+                    <li><a href="{% url 'cadastro_receita' %}">Cadastro</a></li>
+                    <li><a href="{% url 'gestao_receita' %}">Gestão</a></li>
+                    <li><a href="{% url 'analise_receita' %}">Análises</a></li>
+                </ul>
+            </li>
+            <li>
+                <a onclick="showSubMenu('despesas')" class="menu-item">
+                    <img src="{% static 'img/pagar.png' %}" class="menu-icon">
+                    Despesas
+                </a>
+                <ul class="submenu" id="despesas">
+                    <li><a href="{% url 'cadastro_despesa' %}">Cadastro</a></li>
+                    <li><a href="{% url 'gestao_despesa' %}">Gestão</a></li>
+                    <li><a href="{% url 'analise_despesa' %}">Análises</a></li>
+                </ul>
+            </li>
+            <li><a onclick="showSubMenu('painel')" class="menu-item">
+                    <img src="{% static 'img/painel.png' %}" class="menu-icon">
+                    Painel
+                </a>
+                <ul class="submenu" id="painel">
+                    <li><a href="{% url 'performance' %}"onclick="">Performance</a></li>
+                    <li><a href="{% url 'operacoes' %}">Operações</a></li>
+                    <li><a href="{% url 'giro' %}">Giro</a></li>
+                </ul>
+            </li>
+            <li><a onclick="showSubMenu('relatorios')" class="menu-item">
+                    <img src="{% static 'img/rel.png' %}" class="menu-icon">
+                    Relatórios
+                </a>
+                <ul class="submenu" id="relatorios">
+                    <li><a href="{% url 'gastos' %}">Gastos</a></li>
+                    <li><a href="{% url 'balanco' %}">Balanços</a></li>
+                    <li><a href="{% url 'contas' %}">Contas</a></li>
+                </ul>
+            </li>
+            <li><a onclick="showSubMenu('sistema')" class="menu-item">
+                    <img src="{% static 'img/sis.png' %}" class="menu-icon">
+                    Sistema
+                </a>
+                <ul class="submenu" id="sistema">
+                    <li><a href="{% url 'metas' %}">Metas</a></li>
+                    <li><a onclick="">Notícias</a></li>
+                </ul>
+            </li>
+            <li><a href="{% url 'contas' %}" class="menu-item">
+                    <img src="{% static 'img/volt.png' %}" class="menu-icon">
+                    Sair
+                </a>
+        </ul>
+    </div>
+    <div class="cards-container">
+        <div class="card saldo" style="background-color: #334756;">
+            <h3>Saldo Total<i class="fas fa-money-check"></i></h3>
+            <p>R$ {{ saldo }}</p>
+        </div>
+        <div class="card receitas" style="background-color: #335747;">
+            <h3>Receitas Recebidas<i class="fas fa-hand-holding-usd"></i></h3>
+            <p>R$ {{ total_receitas }}</p>
+        </div>
+        <div class="card despesas" style="background-color: #33393B;">
+            <h3>Despesas Pagas<i class="fas fa-receipt"></i></h3>
+            <p>R$ {{ total_despesas }}</p>
+        </div>
+    </div>
+    <div class="dashboard-container">
+        <div class="filter-card">
+            <h3>Filtro de Lançamentos</h3>
+            <form id="filter-form" action="{% url 'filtrar_lancamentos' %}" method="get">
+                <div class="form-group">
+                    <label for="tipo-lancamento">Tipo de Lançamento:</label>
+                    <select name="tipo-lancamento" id="tipo-lancamento">
+                        <option value="entrada">Entradas (Receitas)</option>
+                        <option value="saida">Saídas (Despesas)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="periodo-inicial">Período Inicial:</label>
+                    <input type="date" name="periodo-inicial" id="periodo-inicial">
+                </div>
+                <div class="form-group">
+                    <label for="periodo-final">Período Final:</label>
+                    <input type="date" name="periodo-final" id="periodo-final">
+                </div>
+                <button type="submit" style="background-color: #334756;  border: none; border-radius: 4px; width: 80px; color: white;">Filtrar</button>
+            </form>
+        </div>
+        <div class="chart-container">
+            <canvas id="areaChart"></canvas>
+        </div>
+    </div>
+    <script src="{% static 'js/home.js' %}"></script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('areaChart').getContext('2d');
+            const formatDate = (dateStr) => {
+                const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                return new Date(dateStr).toLocaleDateString('pt-BR', options);
+            };
+
+            const initialData = {{ entradas_mes|safe }};
+            const labels = initialData.map(entry => formatDate(entry.data));
+            const data = initialData.map(entry => entry.total);
+
+            const areaChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Lançamentos',
+                        data: data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('filter-form').addEventListener('submit', function (e) {
+                e.preventDefault();
+                const tipoLancamento = document.getElementById('tipo-lancamento').value;
+                const periodoInicial = document.getElementById('periodo-inicial').value;
+                const periodoFinal = document.getElementById('periodo-final').value;
+
+                fetch(`{% url 'filtrar_lancamentos' %}?tipo-lancamento=${tipoLancamento}&periodo-inicial=${periodoInicial}&periodo-final=${periodoFinal}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const labels = data.map(entry => formatDate(entry.data));
+                        const dataset = data.map(entry => entry.total);
+
+                        areaChart.data.labels = labels;
+                        areaChart.data.datasets[0].data = dataset;
+                        areaChart.update();
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+        function updateClock() {
+            var now = new Date();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+
+            var timeString = hours + ':' + minutes + ':' + seconds;
+
+            document.getElementById('clock').textContent = timeString;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financas Relatório</title>
+    <link rel="stylesheet" href="{% static 'css/relatorio.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    {% include "principal/home.html" %}
+    <div class="relatorio-container">
+        <h2>Relatório de Balanço Patrimonial</h2>
+
+        <div class="section">
+            <h3>Ativos</h3>
+            <ul>
+                {% for receita in receitas %}
+                    <li>{{ receita.descricao }} - ${{ receita.valor }} em {{ receita.data_receita }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>Passivos</h3>
+            <ul>
+                {% for despesa in despesas %}
+                    <li>{{ despesa.descricao }} - ${{ despesa.valor }} em {{ despesa.data_despesa }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>Resumo</h3>
+            <div class="resumo">
+                <p><i class="fa fa-coins"></i> Total de Ativos: ${{ total_receitas }}</p>
+                <p><i class="fa fa-credit-card"></i> Total de Passivos: ${{ total_despesas }}</p>
+                <p><i class="fa fa-balance-scale"></i> Patrimônio Líquido: ${{ patrimonio_liquido }}</p>
+            </div>
+        </div>
+
+        <div class="download-section">
+            <a href="?download=1" class="download-button">Baixar Relatório</a>
+        </div>
+    </div>
+
+    <script src="{% static 'js/home.js' %}"></script>
+    <script>
+        hideContainers();
+    </script>
+</body>
+</html>

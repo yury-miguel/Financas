@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financas Extratos</title>
+    <link rel="stylesheet" href="{% static 'css/financeiro.css' %}">
+</head>
+<body>
+    {% include "principal/home.html" %}
+    <div class="container3">
+        <h2>Extratos de Receitas</h2>
+        <div class="table-container">
+            <table class="extratos-table">
+                <thead>
+                    <tr>
+                        <th>Descrição</th>
+                        <th>Categoria</th>
+                        <th>Valor</th>
+                        <th>Efetuada</th>
+                        <th>Status</th>
+                        <th>Data Vencimento</th>
+                        <th>Data Recebimento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for receita in extratos_receitas %}
+                    <tr>
+                        <td>{{ receita.descricao }}</td>
+                        <td>{{ receita.categoria }}</td>
+                        <td>{{ receita.valor }}</td>
+                        <td>{{ receita.status|yesno:"efetuada,nao_efetuada" }}</td>
+                        <td>{% if receita.status == "efetuada" %} Recebido {% else %} Em Atraso {% endif %}</td>
+                        <td>{% if receita.status == "nao_efetuada" %} {{ receita.data_receita }} {% endif %}</td>
+                        <td>{% if receita.status == "efetuada" %} {{ receita.data_receita }} {% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Extratos de Despesas</h2>
+        <div class="table-container">
+            <table class="extratos-table">
+                <thead>
+                    <tr>
+                        <th>Descrição</th>
+                        <th>Categoria</th>
+                        <th>Valor</th>
+                        <th>Efetuada</th>
+                        <th>Status</th>
+                        <th>Data Vencimento</th>
+                        <th>Data Pagamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for despesa in extratos_despesas %}
+                    <tr>
+                        <td>{{ despesa.descricao }}</td>
+                        <td>{{ despesa.categoria }}</td>
+                        <td>{{ despesa.valor }}</td>
+                        <td>{{ despesa.status|yesno:"efetuada,nao_efetuada" }}</td>
+                        <td>{% if despesa.status == "efetuada" %} Pago {% else %} Inadimplente {% endif %}</td>
+                        <td>{% if despesa.status == "nao_efetuada" %} {{ despesa.data_despesa }} {% endif %}</td>
+                        <td>{% if despesa.efetuada == "efetuada" %} {{ despesa.data_despesa }} {% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <form method="GET" action="" class="date-filter-form">
+        <div class="form-group">
+            <label for="data_inicio">Data de Início:</label>
+            <input type="date" id="data_inicio" name="data_inicio">
+        </div>
+        <div class="form-group">
+            <label for="data_fim">Data de Fim:</label>
+            <input type="date" id="data_fim" name="data_fim">
+        </div>
+        <button type="submit" class="filter-button">Filtrar</button>
+    </form>
+    <script src="{% static 'js/home.js' %}"></script>
+    <script>
+        const values = document.querySelectorAll("td");
+
+        function changeTdColor() {
+          for (let i = 0; i < values.length; i++) {
+                  if (values[i].innerText == "Pago")
+                  {
+                    values[i].style.color = "#FFC700";
+                  }
+                  else if (values[i].innerText == "Recebido")
+                  {
+                    values[i].style.color = "#FFC700";
+                  }
+                  else if (values[i].innerText == "Em Atraso")
+                  {
+                    values[i].style.color = "red";
+                  }
+                  else if (values[i].innerText == "Inadimplente")
+                  {
+                    values[i].style.color = "red";
+                  }
+              }
+        }
+
+        changeTdColor()
+        hideContainers();
+    </script>
+</body>
+</html>
