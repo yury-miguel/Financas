@@ -5,10 +5,10 @@ import psycopg2
 def conexao():
     dbonline = {
         'host': 'localhost',
-        'port': 5432,
+        'port':- ,
         'user': 'postgres',
         'database': 'financas',
-        'password': '21112019'
+        'password': ''
     }
 
     try:
