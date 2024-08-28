@@ -40,9 +40,11 @@ def cadastro_receita(request):
                     tipo='receita'
                 )
                 nova_categoria_obj.save()
-                print(nova_categoria)
+
 
             elif descricao and valor and data_receita and categoria:
+                efetuada = 'nao_efetuada' if efetuada is None else efetuada
+
                 receita_obj = Receita(
                     id_usuario=usuario_instancia,
                     descricao=descricao,
@@ -65,6 +67,7 @@ def gestao_receita(request):
             contexto = perfil(request)
             receitas = todas_receitas(Receita, usuario_id)
             contexto['receitas'] = receitas
+
             return render(request, 'financeiro/gestao_receita.html', contexto)
         else:
             return redirect('login')
@@ -79,7 +82,8 @@ def gestao_receita(request):
             receita.descricao = request.POST.get('descricao')
             receita.valor = request.POST.get('valor')
             receita.data_receita = request.POST.get('data_receita')
-            receita.efetuada = request.POST.get('efetuada') == 'True'
+            receita.status = request.POST.get('efetuada')
+            receita.status = 'nao_efetuada' if receita.status is None else receita.status
             receita.categoria = request.POST.get('categoria')
 
             receita.save()
@@ -98,10 +102,10 @@ def detalhes_receita(request, receita_id):
     receita = get_object_or_404(Receita, pk=receita_id)
 
     dados_receita = {
-        'id': receita.receita_id,
+        'id': receita.id_receita,
         'descricao': receita.descricao,
         'valor': receita.valor,
-        'efetuada': receita.efetuada,
+        'status': receita.status,
         'data_receita': receita.data_receita.strftime('%Y-%m-%d'),
         'categoria': receita.categoria,
     }
@@ -165,6 +169,8 @@ def cadastro_despesa(request):
                 nova_categoria_obj.save()
 
             elif descricao and valor and data_despesa and categoria:
+                efetuada = 'nao_efetuada' if efetuada is None else efetuada
+
                 despesa_obj = Despesa(
                     id_usuario=usuario_instancia,
                     descricao=descricao,
@@ -201,7 +207,8 @@ def gestao_despesa(request):
             despesa.descricao = request.POST.get('descricao')
             despesa.valor = request.POST.get('valor')
             despesa.data_receita = request.POST.get('data_despesa')
-            despesa.efetuada = request.POST.get('efetuada') == 'True'
+            despesa.status = request.POST.get('efetuada')
+            despesa.status = 'nao_efetuada' if despesa.status is None else despesa.status
             despesa.categoria = request.POST.get('categoria')
 
             despesa.save()
@@ -220,10 +227,10 @@ def detalhes_despesa(request, despesa_id):
     despesa = get_object_or_404(Despesa, pk=despesa_id)
 
     dados_despesa = {
-        'id': despesa.despesa_id,
+        'id': despesa.id_despesa,
         'descricao': despesa.descricao,
         'valor': despesa.valor,
-        'efetuada': despesa.efetuada,
+        'status': despesa.status,
         'data_despesa': despesa.data_despesa.strftime('%Y-%m-%d'),
         'categoria': despesa.categoria,
     }

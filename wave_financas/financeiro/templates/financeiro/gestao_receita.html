@@ -16,7 +16,7 @@
                     <tr>
                         <th>Descrição</th>
                         <th>Valor</th>
-                        <th>Efetuada</th>
+                        <th>Status</th>
                         <th>Data</th>
                         <th>Categoria</th>
                         <th>Ações</th>
@@ -24,15 +24,15 @@
                 </thead>
                 <tbody>
                     {% for receita in receitas %}
-                    <tr data-id="{{ receita.receita_id }}">
+                    <tr data-id="{{ receita.id_receita }}">
                         <td>{{ receita.descricao }}</td>
                         <td>{{ receita.valor }}</td>
-                        <td>{{ receita.efetuada|yesno:"Sim,Não" }}</td>
+                        <td>{{ receita.status }}</td>
                         <td>{{ receita.data_receita }}</td>
                         <td>{{ receita.categoria }}</td>
                         <td>
-                            <button onclick="editReceita({{ receita.receita_id }})" style="border: none; background-color: #EED548">Editar</button>
-                            <button onclick="deleteReceita({{ receita.receita_id }})" style="border: none; background-color: #FF4141">Excluir</button>
+                            <button onclick="editReceita({{ receita.id_receita }})" style="border: none; background-color: #EED548">Editar</button>
+                            <button onclick="deleteReceita({{ receita.id_receita }})" style="border: none; background-color: #FF4141">Excluir</button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -62,7 +62,7 @@
                 <div class="form-group">
                     <label for="efetuada-checkbox">Efetuada</label>
                     <label class="switch">
-                        <input type="checkbox" id="efetuada-checkbox" name="efetuada" value="False">
+                        <input type="checkbox" id="efetuada-checkbox" name="efetuada" value="nao_efetuada">
                         <span class="slider round"></span>
                     </label>
                     <span id="toggle-text">Receita Recorrente</span>
@@ -82,17 +82,17 @@
         document.getElementById('efetuada-checkbox').addEventListener('change', function() {
             var toggleText = document.getElementById('toggle-text');
             if (this.checked) {
-                this.value = 'True';
+                this.value = 'efetuada';
                 toggleText.textContent = 'Receita Recebida';
             } else {
-                this.value = 'False';
+                this.value = 'nao_efetuada';
                 toggleText.textContent = 'Receita Recorrente';
             }
         });
 
         function editReceita(id) {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/movimentacao/detalhes_receita/' + id, true);
+            xhr.open('GET', '/financeiro/detalhes_receita/' + id, true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
@@ -110,7 +110,7 @@
             document.getElementById('receita_id').value = receita.id;
             document.getElementById('descricao').value = receita.descricao;
             document.getElementById('valor').value = receita.valor;
-            document.getElementById('efetuada-checkbox').checked = receita.efetuada;
+            document.getElementById('efetuada-checkbox').checked = receita.status === 'efetuada';
             document.getElementById('efetuada-checkbox').dispatchEvent(new Event('change'));
             document.getElementById('data_receita').value = receita.data_receita;
             var selectCategoria = document.getElementById('categoria');

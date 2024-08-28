@@ -16,7 +16,7 @@
                     <tr>
                         <th>Descrição</th>
                         <th>Valor</th>
-                        <th>Efetuada</th>
+                        <th>Status</th>
                         <th>Data</th>
                         <th>Categoria</th>
                         <th>Ações</th>
@@ -24,15 +24,15 @@
                 </thead>
                 <tbody>
                     {% for despesa in despesas %}
-                    <tr data-id="{{ despesa.despesa_id }}">
+                    <tr data-id="{{ despesa.id_despesa }}">
                         <td>{{ despesa.descricao }}</td>
                         <td>{{ despesa.valor }}</td>
-                        <td>{{ despesa.efetuada|yesno:"Sim,Não" }}</td>
+                        <td>{{ despesa.status}}</td>
                         <td>{{ despesa.data_despesa }}</td>
                         <td>{{ despesa.categoria }}</td>
                         <td>
-                            <button onclick="editdespesa({{ despesa.despesa_id }})" style="border: none; background-color: #EED548">Editar</button>
-                            <button onclick="deleteDespesa({{ despesa.despesa_id }})" style="border: none; background-color: #FF4141">Excluir</button>
+                            <button onclick="editdespesa({{ despesa.id_despesa }})" style="border: none; background-color: #EED548">Editar</button>
+                            <button onclick="deleteDespesa({{ despesa.id_despesa }})" style="border: none; background-color: #FF4141">Excluir</button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -62,7 +62,7 @@
                 <div class="form-group">
                     <label for="efetuada-checkbox">Efetuada</label>
                     <label class="switch">
-                        <input type="checkbox" id="efetuada-checkbox" name="efetuada" value="False">
+                        <input type="checkbox" id="efetuada-checkbox" name="efetuada" value="nao_efetuada">
                         <span class="slider round"></span>
                     </label>
                     <span id="toggle-text">despesa Recorrente</span>
@@ -82,17 +82,17 @@
         document.getElementById('efetuada-checkbox').addEventListener('change', function() {
             var toggleText = document.getElementById('toggle-text');
             if (this.checked) {
-                this.value = 'True';
-                toggleText.textContent = 'despesa Recebida';
+                this.value = 'efetuada';
+                toggleText.textContent = 'Despesa Paga';
             } else {
-                this.value = 'False';
-                toggleText.textContent = 'despesa Recorrente';
+                this.value = 'nao_efetuada';
+                toggleText.textContent = 'Despesa Não Paga';
             }
         });
 
         function editdespesa(id) {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/movimentacao/detalhes_despesa/' + id, true);
+            xhr.open('GET', '/financeiro/detalhes_despesa/' + id, true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
@@ -110,7 +110,7 @@
             document.getElementById('despesa_id').value = despesa.id;
             document.getElementById('descricao').value = despesa.descricao;
             document.getElementById('valor').value = despesa.valor;
-            document.getElementById('efetuada-checkbox').checked = despesa.efetuada;
+            document.getElementById('efetuada-checkbox').checked = despesa.status == 'efetuada';
             document.getElementById('efetuada-checkbox').dispatchEvent(new Event('change'));
             document.getElementById('data_despesa').value = despesa.data_despesa;
             var selectCategoria = document.getElementById('categoria');
